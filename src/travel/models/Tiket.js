@@ -18,7 +18,12 @@ class Tiket {
   }
 
   static findByKodeBooking(kodeBooking) {
-    const stmt = db.prepare('SELECT * FROM tiket WHERE kode_booking_reference = ?');
+    const stmt = db.prepare(`
+      SELECT t.*, pm.kode_booking_reference, pm.status_booking
+      FROM tiket t
+      JOIN pemesanan pm ON t.pemesanan_id = pm.id
+      WHERE pm.kode_booking_reference = ?
+    `);
     return stmt.get(kodeBooking);
   }
 

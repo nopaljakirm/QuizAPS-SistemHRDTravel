@@ -33,10 +33,10 @@ class Profil {
     return this.findByPenggunaId(penggunaId);
   }
 
-  // Sesuai UC6 (US5b): cek kelengkapan profil sebelum validasi tiket
+  // Sesuai UC6 (US5b): cek kelengkapan profil sebelum validasi
   static cekKelengkapan(penggunaId) {
     const profil = this.findByPenggunaId(penggunaId);
-    return profil && profil.status_kelengkapan === 'lengkap';
+    return !!(profil && profil.status_kelengkapan === 'lengkap');
   }
 }
 

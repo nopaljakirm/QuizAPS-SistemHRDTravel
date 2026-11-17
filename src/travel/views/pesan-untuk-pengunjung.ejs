@@ -1,90 +1,92 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Pesan Tiket untuk Pengunjung</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    .error { color: #e74c3c; }
-    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    a { color: #2980b9; }
-    hr { margin: 30px 0; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC9: Mencari & Memesan Tiket untuk Pengunjung</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Pesan untuk Pengunjung' }) %>
 
-  <h3>Langkah 1: Cari Penerbangan</h3>
-  <form method="GET" action="/pesan-untuk-pengunjung">
-    <div>
-      <label>Kota Asal:</label>
-      <input type="text" name="kotaAsal" placeholder="Contoh: Surabaya" required>
-    </div>
-    <div>
-      <label>Kota Tujuan:</label>
-      <input type="text" name="kotaTujuan" placeholder="Contoh: Jakarta" required>
-    </div>
-    <button type="submit">Cari</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Mencari & Memesan Tiket untuk Pengunjung</h1>
+  <p class="text-muted mb-0">Manajer travel membantu pemesanan atas nama pengunjung (non-member).</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="card mb-4">
+  <div class="card-body">
+    <h6 class="card-title text-muted">Langkah 1: Cari Penerbangan</h6>
+    <form method="GET" action="/travel/pesan-untuk-pengunjung" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Kota Asal</label>
+        <input type="text" class="form-control" name="kotaAsal" placeholder="Contoh: Surabaya" value="<%= kotaAsal || '' %>" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Kota Tujuan</label>
+        <input type="text" class="form-control" name="kotaTujuan" placeholder="Contoh: Jakarta" value="<%= kotaTujuan || '' %>" required>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Cari</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <% if (data && data.length > 0) { %>
-    <table>
+<% if (error) { %>
+  <div class="alert alert-warning"><%= error %></div>
+<% } %>
+
+<% if (data && data.length > 0) { %>
+  <div class="card mb-4">
+    <table class="table table-hover mb-0 align-middle">
       <thead>
-        <tr><th>ID</th><th>No. Penerbangan</th><th>Maskapai</th><th>Harga</th></tr>
+        <tr><th>No. Penerbangan</th><th>Maskapai</th><th>Rute</th><th>Harga</th><th></th></tr>
       </thead>
       <tbody>
         <% data.forEach(function(item) { %>
           <tr>
-            <td><%= item.id %></td>
             <td><%= item.nomor_penerbangan %></td>
             <td><%= item.nama_maskapai %></td>
+            <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
             <td>Rp <%= item.harga.toLocaleString('id-ID') %></td>
+            <td>
+              <button type="button" class="btn btn-sm btn-success"
+                      onclick="document.getElementById('penerbanganIdInput').value='<%= item.id %>'; document.getElementById('formPesanPengunjung').scrollIntoView();">
+                Pilih
+              </button>
+            </td>
           </tr>
         <% }); %>
       </tbody>
     </table>
-  <% } %>
+  </div>
+<% } %>
 
-  <hr>
-  <h3>Langkah 2: Pesan Tiket untuk Pengunjung</h3>
-  <form method="POST" action="/pesan-untuk-pengunjung">
-    <div>
-      <label>ID Penerbangan:</label>
-      <input type="number" name="penerbanganId" placeholder="Dari hasil pencarian di atas" required>
-    </div>
-    <div>
-      <label>Nama Pengunjung:</label>
-      <input type="text" name="namaPengunjung" placeholder="Contoh: Budi Santoso" required>
-    </div>
-    <div>
-      <label>Email Pengunjung:</label>
-      <input type="email" name="emailPengunjung" placeholder="Contoh: budi@mail.com" required>
-    </div>
-    <div>
-      <label>Nomor Identitas:</label>
-      <input type="text" name="nomorIdentitas" placeholder="Opsional">
-    </div>
-    <button type="submit">Pesan untuk Pengunjung</button>
-  </form>
+<div class="card">
+  <div class="card-body">
+    <h6 class="card-title text-muted">Langkah 2: Data Pengunjung</h6>
+    <form method="POST" action="/travel/pesan-untuk-pengunjung" id="formPesanPengunjung">
+      <input type="hidden" name="penerbanganId" id="penerbanganIdInput" value="">
+      <div class="mb-3">
+        <label class="form-label">Nama Pengunjung</label>
+        <input type="text" class="form-control" name="namaPengunjung" placeholder="Contoh: Budi Santoso" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email Pengunjung</label>
+        <input type="email" class="form-control" name="emailPengunjung" placeholder="Contoh: budi@mail.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nomor Identitas (opsional)</label>
+        <input type="text" class="form-control" name="nomorIdentitas">
+      </div>
+      <button type="submit" class="btn btn-success">Pesan untuk Pengunjung</button>
+      <p class="form-text">Klik tombol "Pilih" pada daftar penerbangan di atas untuk mengisi otomatis.</p>
+    </form>
+  </div>
+</div>
 
-  <% if (konfirmasi) { %>
-    <div class="success-box">
-      <h3>✅ Pemesanan Berhasil (atas nama Pengunjung)</h3>
-      <p><strong>Nama Pengunjung:</strong> <%= konfirmasi.pengunjung.nama %> (ID: <%= konfirmasi.pengunjung.id %>)</p>
-      <p><strong>Kode Booking:</strong> <%= konfirmasi.kode_booking_reference %></p>
-      <p><strong>E-tiket:</strong> Telah dikirim ke <%= konfirmasi.pengunjung.email %></p>
-      <p><em>Catatan: tiket ini otomatis tampil di akun pengunjung (lihat menu "Akun Pengunjung" dengan ID <%= konfirmasi.pengunjung.id %>)</em></p>
-    </div>
-  <% } %>
-</body>
-</html>
+<% if (konfirmasi) { %>
+  <div class="alert alert-success mt-4">
+    <h6 class="alert-heading">Pemesanan Berhasil (atas nama Pengunjung)</h6>
+    <p class="mb-1"><strong>Nama Pengunjung:</strong> <%= konfirmasi.pengunjung.nama %></p>
+    <p class="mb-1"><strong>Kode Booking:</strong> <%= konfirmasi.kode_booking_reference %></p>
+    <p class="mb-1"><strong>E-tiket:</strong> Telah dikirim ke <%= konfirmasi.pengunjung.email %></p>
+    <a href="/travel/akun-pengunjung?pengunjungId=<%= konfirmasi.pengunjung.id %>" class="btn btn-sm btn-outline-success mt-2">
+      Lihat Tiket di Akun Pengunjung &rarr;
+    </a>
+  </div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

@@ -1,4 +1,4 @@
-// src/controllers/statusBookingController.js
+// src/travel/controllers/statusBookingController.js
 // Controller untuk UC8: Memeriksa dan Memfilter Status Booking (US7)
 
 const Tiket = require('../models/Tiket');

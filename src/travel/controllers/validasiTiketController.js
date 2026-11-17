@@ -1,43 +1,65 @@
-// src/controllers/validasiTiketController.js
+// src/travel/controllers/validasiTiketController.js
 // Controller untuk UC6: Melakukan Validasi Tiket (US5b)
-// Menerapkan <<extend>> ke UC5 (Update Profil) jika profil belum lengkap
+// <<extend>> ke UC5 jika profil pengguna belum lengkap
+// Pakai dropdown (pengguna + tiket), bukan ketik ID/kode manual
 
+const db = require('../db/database');
+const Pengguna = require('../models/Pengguna');
 const Profil = require('../models/Profil');
-const Tiket = require('../models/Tiket');
+const Pemesanan = require('../models/Pemesanan');
 
 exports.showFormValidasi = (req, res) => {
-  res.render('validasi-tiket', { error: null, hasil: null, perluLengkapiProfil: false });
+  const { penggunaId } = req.query;
+
+  const daftarPengguna = db.prepare('SELECT * FROM pengguna').all();
+  const pengguna = penggunaId ? Pengguna.findById(penggunaId) : null;
+
+  // Daftar tiket milik pengguna terpilih, untuk dropdown tiket
+  const daftarTiket = penggunaId
+    ? Pemesanan.findByEmailPenumpang(pengguna ? pengguna.email : '')
+    : [];
+
+  res.render('validasi-tiket', {
+    error: null,
+    daftarPengguna,
+    pengguna,
+    daftarTiket,
+    hasil: null
+  });
 };
 
-// Sesuai UC6 (US5b): validasi tiket, dengan alur gagal jika profil tidak lengkap
 exports.validasiTiket = (req, res) => {
-  const { kodeBooking, penggunaId } = req.body;
+  const { penggunaId, kodeBooking } = req.body;
 
-  const tiket = Tiket.findByKodeBooking(kodeBooking);
+  const daftarPengguna = db.prepare('SELECT * FROM pengguna').all();
+  const pengguna = Pengguna.findById(penggunaId);
 
-  if (!tiket) {
+  if (!pengguna) {
     return res.render('validasi-tiket', {
-      error: `Tiket dengan kode booking "${kodeBooking}" tidak ditemukan`,
-      hasil: null,
-      perluLengkapiProfil: false
+      error: 'Pengguna tidak ditemukan', daftarPengguna, pengguna: null, daftarTiket: [], hasil: null
     });
   }
 
-  const profilLengkap = Profil.cekKelengkapan(penggunaId);
+  const daftarTiket = Pemesanan.findByEmailPenumpang(pengguna.email);
 
-  // Sesuai Robustness Diagram UC5/UC6: alt fragment - profil tidak lengkap
+  // Sesuai Robustness Diagram UC5/UC6: alt fragment - profil tidak lengkap -> <<extend>> ke UC5
+  const profilLengkap = Profil.cekKelengkapan(pengguna.id);
+
   if (!profilLengkap) {
     return res.render('validasi-tiket', {
-      error: 'Data profil tidak lengkap. Mohon lengkapi data profil Anda terlebih dahulu.',
-      hasil: null,
-      perluLengkapiProfil: true,
-      penggunaId
+      error: null,
+      daftarPengguna,
+      pengguna,
+      daftarTiket,
+      hasil: { status: 'profil_tidak_lengkap', kodeBooking }
     });
   }
 
   res.render('validasi-tiket', {
     error: null,
-    hasil: { tiket, valid: true },
-    perluLengkapiProfil: false
+    daftarPengguna,
+    pengguna,
+    daftarTiket,
+    hasil: { status: 'sukses', kodeBooking }
   });
 };

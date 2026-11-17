@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Status Booking</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    .filter-link { margin-right: 10px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC8: Memeriksa & Memfilter Status Booking</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Status Booking' }) %>
 
-  <p>
-    <a class="filter-link" href="/status-booking">Semua</a>
-    <a class="filter-link" href="/status-booking?filter=confirmed">Confirmed</a>
-    <a class="filter-link" href="/status-booking?filter=booked">Booked</a>
-    <a class="filter-link" href="/status-booking?filter=waiting_payment">Waiting Payment</a>
-    <a class="filter-link" href="/status-booking?filter=dibatalkan">Dibatalkan</a>
-  </p>
+<div class="page-header">
+  <h1 class="h3">Status Booking</h1>
+  <p class="text-muted mb-0">Periksa dan filter status seluruh booking tiket.</p>
+</div>
 
-  <p><em>Filter aktif: <%= filterAktif || 'Semua' %></em></p>
+<div class="mb-3">
+  <a href="/travel/status-booking" class="btn btn-sm <%= !filterAktif ? 'btn-primary' : 'btn-outline-primary' %>">Semua</a>
+  <a href="/travel/status-booking?filter=confirmed" class="btn btn-sm <%= filterAktif === 'confirmed' ? 'btn-primary' : 'btn-outline-primary' %>">Confirmed</a>
+  <a href="/travel/status-booking?filter=booked" class="btn btn-sm <%= filterAktif === 'booked' ? 'btn-primary' : 'btn-outline-primary' %>">Booked</a>
+  <a href="/travel/status-booking?filter=waiting_payment" class="btn btn-sm <%= filterAktif === 'waiting_payment' ? 'btn-primary' : 'btn-outline-primary' %>">Waiting Payment</a>
+  <a href="/travel/status-booking?filter=dibatalkan" class="btn btn-sm <%= filterAktif === 'dibatalkan' ? 'btn-primary' : 'btn-outline-primary' %>">Dibatalkan</a>
+</div>
 
-  <% if (data && data.length > 0) { %>
-    <table>
+<% if (data && data.length > 0) { %>
+  <div class="card">
+    <table class="table table-hover mb-0 align-middle">
       <thead>
-        <tr><th>Kode Booking</th><th>No. Penerbangan</th><th>Rute</th><th>Status</th><th>E-tiket Terkirim</th></tr>
+        <tr><th>Kode Booking</th><th>No. Penerbangan</th><th>Rute</th><th>Status</th><th>E-tiket</th></tr>
       </thead>
       <tbody>
         <% data.forEach(function(item) { %>
@@ -37,14 +25,15 @@
             <td><%= item.kode_booking_reference %></td>
             <td><%= item.nomor_penerbangan %></td>
             <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
-            <td><%= item.status_booking %></td>
+            <td><span class="badge text-bg-secondary"><%= item.status_booking %></span></td>
             <td><%= item.etiket_terkirim ? 'Ya' : 'Belum' %></td>
           </tr>
         <% }); %>
       </tbody>
     </table>
-  <% } else { %>
-    <p>Belum ada data booking.</p>
-  <% } %>
-</body>
-</html>
+  </div>
+<% } else { %>
+  <div class="alert alert-info">Belum ada data booking.</div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

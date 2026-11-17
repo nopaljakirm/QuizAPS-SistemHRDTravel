@@ -1,52 +1,72 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Validasi Tiket</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    .error { color: #e74c3c; }
-    .warning-box { background: #fff3cd; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC6: Melakukan Validasi Tiket</h1>
-  <p><em>Coba Pengguna ID 2 dengan kode booking hasil pemesanan sebelumnya</em></p>
+<%- include('../../views/partials/header', { pageTitle: 'Validasi Tiket' }) %>
 
-  <form method="POST" action="/validasi-tiket">
-    <div>
-      <label>ID Pengguna:</label>
-      <input type="number" name="penggunaId" placeholder="Contoh: 2" required>
-    </div>
-    <div>
-      <label>Kode Booking:</label>
-      <input type="text" name="kodeBooking" placeholder="Contoh: BR123456" required>
-    </div>
-    <button type="submit">Validasi Tiket</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Validasi Tiket</h1>
+  <p class="text-muted mb-0">Pilih akun dan tiket yang ingin divalidasi.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+<% } %>
 
-  <% if (perluLengkapiProfil) { %>
-    <div class="warning-box">
-      <p>⚠️ Data profil Anda belum lengkap.</p>
-      <a href="/update-profil?penggunaId=<%= penggunaId %>">Lengkapi Profil Sekarang &rarr;</a>
-    </div>
-  <% } %>
+<% if (hasil && hasil.status === 'profil_tidak_lengkap') { %>
+  <div class="alert alert-warning">
+    Profil Anda belum lengkap, tiket <strong><%= hasil.kodeBooking %></strong> belum bisa divalidasi.
+    <a href="/travel/update-profil?penggunaId=<%= pengguna.id %>" class="alert-link">Lengkapi profil dulu &rarr;</a>
+  </div>
+<% } %>
 
-  <% if (hasil && hasil.valid) { %>
-    <div class="success-box">
-      <h3>✅ Tiket Valid</h3>
-      <p><strong>Kode Booking:</strong> <%= hasil.tiket.kode_booking_reference %></p>
-      <p><strong>Status:</strong> <%= hasil.tiket.status_booking %></p>
+<% if (hasil && hasil.status === 'sukses') { %>
+  <div class="alert alert-success">Tiket <strong><%= hasil.kodeBooking %></strong> berhasil divalidasi.</div>
+<% } %>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="GET" action="/travel/validasi-tiket" class="row g-3 align-items-end">
+      <div class="col-md-10">
+        <label class="form-label">Pilih Akun Member</label>
+        <select name="penggunaId" class="form-select" onchange="this.form.submit()">
+          <option value="" disabled <%= !pengguna ? 'selected' : '' %>>-- Pilih nama --</option>
+          <% daftarPengguna.forEach(function(p) { %>
+            <option value="<%= p.id %>" <%= (pengguna && pengguna.id === p.id) ? 'selected' : '' %>>
+              <%= p.nama %> (<%= p.email %>)
+            </option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <noscript><button type="submit" class="btn btn-secondary w-100">Tampilkan</button></noscript>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% if (pengguna) { %>
+  <div class="card">
+    <div class="card-body">
+      <% if (daftarTiket.length === 0) { %>
+        <p class="text-muted mb-0">Belum ada tiket atas nama <%= pengguna.nama %> (<%= pengguna.email %>).</p>
+      <% } else { %>
+        <form method="POST" action="/travel/validasi-tiket">
+          <input type="hidden" name="penggunaId" value="<%= pengguna.id %>">
+          <div class="mb-3">
+            <label class="form-label">Pilih Tiket</label>
+            <select name="kodeBooking" class="form-select" required>
+              <option value="" disabled selected>-- Pilih kode booking --</option>
+              <% daftarTiket.forEach(function(t) { %>
+                <% if (t.status_booking !== 'dibatalkan') { %>
+                  <option value="<%= t.kode_booking_reference %>">
+                    <%= t.kode_booking_reference %> &mdash; <%= t.nomor_penerbangan %> (<%= t.kota_asal %> &rarr; <%= t.kota_tujuan %>)
+                  </option>
+                <% } %>
+              <% }); %>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Validasi Tiket</button>
+        </form>
+      <% } %>
     </div>
-  <% } %>
-</body>
-</html>
+  </div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

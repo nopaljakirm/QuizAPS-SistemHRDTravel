@@ -63,7 +63,7 @@ class Penerbangan {
     return stmt.all(...params);
   }
 
-  // Sesuai UC7 (US6): cari & bandingkan berdasarkan preferensi tujuan/tanggal/jam
+  // Sesuai UC7 (US6): cari penerbangan berdasarkan preferensi, untuk dibandingkan
   static findByPreferensi({ kotaTujuan, tanggal, jam }) {
     let query = `
       SELECT p.*, m.nama AS nama_maskapai
@@ -73,21 +73,12 @@ class Penerbangan {
     `;
     const params = [];
 
-    if (kotaTujuan) {
-      query += ' AND p.kota_tujuan = ?';
-      params.push(kotaTujuan);
-    }
-    if (tanggal) {
-      query += ' AND p.tanggal_keberangkatan = ?';
-      params.push(tanggal);
-    }
-    if (jam) {
-      query += ' AND p.jam_keberangkatan = ?';
-      params.push(jam);
-    }
+    if (kotaTujuan) { query += ' AND p.kota_tujuan LIKE ?'; params.push(`%${kotaTujuan}%`); }
+    if (tanggal) { query += ' AND p.tanggal_keberangkatan = ?'; params.push(tanggal); }
+    if (jam) { query += ' AND p.jam_keberangkatan = ?'; params.push(jam); }
 
-    const stmt = db.prepare(query);
-    return stmt.all(...params);
+    query += ' ORDER BY p.harga ASC';
+    return db.prepare(query).all(...params);
   }
 }
 

@@ -1,4 +1,4 @@
-// src/controllers/otorisasiController.js
+// src/travel/controllers/otorisasiController.js
 // Controller untuk UC12: Melakukan Otorisasi Tiket (US9)
 
 const Tiket = require('../models/Tiket');
@@ -7,7 +7,7 @@ exports.showFormOtorisasi = (req, res) => {
   res.render('otorisasi-tiket', { error: null, hasil: null });
 };
 
-// Sesuai UC12 (US9): cek status booking via kode booking reference, dengan alur gagal jika kode tidak sesuai
+// Sesuai UC12 (US9): cek status booking via kode booking reference
 exports.otorisasiTiket = (req, res) => {
   const { kodeBooking } = req.body;
 
@@ -21,8 +21,5 @@ exports.otorisasiTiket = (req, res) => {
     });
   }
 
-  res.render('otorisasi-tiket', {
-    error: null,
-    hasil: tiket
-  });
+  res.render('otorisasi-tiket', { error: null, hasil: tiket });
 };

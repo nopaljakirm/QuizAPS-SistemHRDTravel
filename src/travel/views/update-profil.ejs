@@ -1,48 +1,43 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Update Data Profil</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    .error { color: #e74c3c; }
-    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC5: Mengupdate Data Profil</h1>
-  <p><em>Coba Pengguna ID 2 (Rian Hidayat - member, profil awal belum lengkap)</em></p>
+<%- include('../../views/partials/header', { pageTitle: 'Update Profil' }) %>
 
-  <form method="POST" action="/update-profil">
-    <div>
-      <label>ID Pengguna:</label>
-      <input type="number" name="penggunaId" placeholder="Contoh: 2" required>
-    </div>
-    <div>
-      <label>Nomor Identitas:</label>
-      <input type="text" name="nomorIdentitas" placeholder="Contoh: 3578xxxxxxxxxxxx" required>
-    </div>
-    <div>
-      <label>Nomor Telepon:</label>
-      <input type="text" name="nomorTelepon" placeholder="Contoh: 081234567890" required>
-    </div>
-    <button type="submit">Update Profil</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Perbarui Data Profil</h1>
+  <p class="text-muted mb-0">Lengkapi data profil Anda sebagai member frequent traveller.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+<% } %>
 
-  <% if (berhasil && profil) { %>
-    <div class="success-box">
-      <h3>✅ Profil Berhasil Diupdate</h3>
-      <p><strong>Nama:</strong> <%= pengguna.nama %></p>
-      <p><strong>Status Kelengkapan:</strong> <%= profil.status_kelengkapan %></p>
-    </div>
-  <% } %>
-</body>
-</html>
+<% if (berhasil) { %>
+  <div class="alert alert-success">Profil berhasil diperbarui. Status: <strong><%= profil.status_kelengkapan %></strong></div>
+<% } %>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST" action="/travel/update-profil">
+      <div class="mb-3">
+        <label class="form-label">Pilih Akun Member</label>
+        <select name="penggunaId" class="form-select" required>
+          <option value="" disabled selected>-- Pilih nama --</option>
+          <% daftarPengguna.forEach(function(p) { %>
+            <option value="<%= p.id %>" <%= (pengguna && pengguna.id === p.id) ? 'selected' : '' %>>
+              <%= p.nama %> (<%= p.email %>)
+            </option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nomor Identitas (KTP/Paspor)</label>
+        <input type="text" class="form-control" name="nomorIdentitas" placeholder="Contoh: 3578xxxxxxxxxxxx" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nomor Telepon</label>
+        <input type="text" class="form-control" name="nomorTelepon" placeholder="Contoh: 081234567890" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Simpan Profil</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../../views/partials/footer') %>

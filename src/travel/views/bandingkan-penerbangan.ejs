@@ -1,62 +1,66 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Bandingkan Penerbangan</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    .error { color: #e74c3c; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC7: Melihat & Membandingkan Penerbangan</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Bandingkan Penerbangan' }) %>
 
-  <form method="GET" action="/bandingkan-penerbangan">
-    <div>
-      <label>Kota Tujuan:</label>
-      <input type="text" name="kotaTujuan" placeholder="Contoh: Jakarta" value="<%= typeof kotaTujuan !== 'undefined' ? kotaTujuan : '' %>">
-    </div>
-    <div>
-      <label>Tanggal:</label>
-      <input type="date" name="tanggal" value="<%= typeof tanggal !== 'undefined' ? tanggal : '' %>">
-    </div>
-    <div>
-      <label>Jam:</label>
-      <input type="time" name="jam" value="<%= typeof jam !== 'undefined' ? jam : '' %>">
-    </div>
-    <button type="submit">Bandingkan</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Bandingkan Penerbangan</h1>
+  <p class="text-muted mb-0">Isi preferensi Anda, hasil diurutkan dari harga termurah.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="GET" action="/travel/bandingkan-penerbangan" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Kota Tujuan</label>
+        <input type="text" class="form-control" name="kotaTujuan" placeholder="Contoh: Bali" value="<%= kotaTujuan || '' %>">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Tanggal</label>
+        <input type="date" class="form-control" name="tanggal" value="<%= tanggal || '' %>">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Jam</label>
+        <input type="time" class="form-control" name="jam" value="<%= jam || '' %>">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Bandingkan</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <% if (data && data.length > 0) { %>
-    <table>
+<% if (error) { %>
+  <div class="alert alert-info"><%= error %></div>
+<% } %>
+
+<% if (data && data.length > 0) { %>
+  <div class="card">
+    <table class="table table-hover mb-0 align-middle">
       <thead>
-        <tr><th>No. Penerbangan</th><th>Maskapai</th><th>Rute</th><th>Jam</th><th>Harga</th></tr>
+        <tr><th>No. Penerbangan</th><th>Maskapai</th><th>Rute</th><th>Tanggal</th><th>Jam</th><th>Harga</th><th></th></tr>
       </thead>
       <tbody>
-        <% data.forEach(function(item) { %>
+        <% data.forEach(function(item, idx) { %>
           <tr>
             <td><%= item.nomor_penerbangan %></td>
             <td><%= item.nama_maskapai %></td>
             <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
+            <td><%= item.tanggal_keberangkatan %></td>
             <td><%= item.jam_keberangkatan %></td>
-            <td>Rp <%= item.harga.toLocaleString('id-ID') %></td>
+            <td>
+              Rp <%= item.harga.toLocaleString('id-ID') %>
+              <% if (idx === 0) { %> <span class="badge text-bg-success">Termurah</span> <% } %>
+            </td>
+            <td>
+              <% if (item.kursi_tersedia > 0) { %>
+                <a href="/travel/pesan-tiket?penerbanganId=<%= item.id %>" class="btn btn-sm btn-success">Pesan</a>
+              <% } else { %>
+                <span class="badge text-bg-secondary">Penuh</span>
+              <% } %>
+            </td>
           </tr>
         <% }); %>
       </tbody>
     </table>
-  <% } else if (data) { %>
-    <p>Tidak ada penerbangan yang sesuai preferensi.</p>
-  <% } %>
-</body>
-</html>
+  </div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

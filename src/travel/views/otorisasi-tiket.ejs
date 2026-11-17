@@ -1,37 +1,34 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Otorisasi Tiket</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    .error { color: #e74c3c; }
-    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC12: Melakukan Otorisasi Tiket</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Otorisasi Tiket' }) %>
 
-  <form method="POST" action="/otorisasi-tiket">
-    <label>Kode Booking:</label>
-    <input type="text" name="kodeBooking" placeholder="Contoh: BR123456" required>
-    <button type="submit">Otorisasi</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Otorisasi Tiket</h1>
+  <p class="text-muted mb-0">Periksa status booking melalui kode booking reference.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="POST" action="/travel/otorisasi-tiket" class="row g-3 align-items-end">
+      <div class="col-md-9">
+        <label class="form-label">Kode Booking</label>
+        <input type="text" class="form-control" name="kodeBooking" placeholder="Contoh: BR123456" required>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Otorisasi</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <% if (hasil) { %>
-    <div class="success-box">
-      <h3>✅ Status Booking Ditemukan</h3>
-      <p><strong>Kode Booking:</strong> <%= hasil.kode_booking_reference %></p>
-      <p><strong>Status:</strong> <%= hasil.status_booking %></p>
-    </div>
-  <% } %>
-</body>
-</html>
+<% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+<% } %>
+
+<% if (hasil) { %>
+  <div class="alert alert-success">
+    <h6 class="alert-heading">Status Booking Ditemukan</h6>
+    <p class="mb-1"><strong>Kode Booking:</strong> <%= hasil.kode_booking_reference %></p>
+    <p class="mb-0"><strong>Status:</strong> <span class="badge text-bg-secondary"><%= hasil.status_booking %></span></p>
+  </div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>
