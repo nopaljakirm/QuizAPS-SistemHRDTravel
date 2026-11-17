@@ -155,3 +155,7 @@ vite.config.ts.timestamp-*
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
+
+# Database files (SQLite) - data lokal hasil testing, bukan source code
+*.db
+*.db-journal
