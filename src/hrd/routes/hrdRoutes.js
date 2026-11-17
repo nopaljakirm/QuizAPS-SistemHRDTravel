@@ -10,7 +10,7 @@ const riwayatCutiController = require('../controllers/riwayatCutiController');
 
 // Halaman utama (menu navigasi)
 router.get('/', (req, res) => {
-  res.render('index');
+  res.render('hrd-index');
 });
 
 // UC1 (US1): Melihat pengajuan cuti berdasarkan periode

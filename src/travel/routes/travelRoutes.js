@@ -18,7 +18,7 @@ const otorisasiController = require('../controllers/otorisasiController');
 
 // Halaman utama (menu navigasi)
 router.get('/', (req, res) => {
-  res.render('index');
+  res.render('travel-index');
 });
 
 // UC1 (US2, US3): Mencari Jadwal Penerbangan
