@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Riwayat Cuti Pegawai</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #2c3e50; }
+    form { margin-bottom: 20px; }
+    label { display: inline-block; width: 120px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    .info-box { background: #ecf0f1; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    .info-box p { margin: 8px 0; }
+    .error { color: #e74c3c; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC3: Riwayat & Sisa Cuti Pegawai</h1>
+
+  <form method="GET" action="/riwayat-cuti">
+    <div>
+      <label for="namaPegawai">Nama Pegawai:</label>
+      <input type="text" id="namaPegawai" name="namaPegawai" placeholder="Contoh: Andi" required>
+    </div>
+    <button type="submit">Cari</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (pegawai && riwayat) { %>
+    <div class="info-box">
+      <p><strong>Nama:</strong> <%= pegawai.nama %></p>
+      <p><strong>Departemen:</strong> <%= pegawai.departemen %></p>
+      <p><strong>Tahun Berjalan:</strong> <%= tahunBerjalan %></p>
+      <p><strong>Sisa Waktu Cuti:</strong> <%= riwayat.sisa_waktu_cuti %> hari</p>
+      <p><strong>Total Cuti Terpakai:</strong> <%= riwayat.total_cuti_terpakai %> hari</p>
+    </div>
+  <% } else if (pegawai && !riwayat) { %>
+    <p>Riwayat cuti untuk tahun ini belum tersedia.</p>
+  <% } %>
+</body>
+</html>

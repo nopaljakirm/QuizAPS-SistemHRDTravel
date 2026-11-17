@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pengajuan Cuti per Periode</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #2c3e50; }
+    form { margin-bottom: 20px; }
+    label { display: inline-block; width: 120px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    .error { color: #e74c3c; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC1: Pengajuan Cuti berdasarkan Periode</h1>
+
+  <form method="GET" action="/pengajuan-periode">
+    <div>
+      <label for="periodeMulai">Periode Mulai:</label>
+      <input type="date" id="periodeMulai" name="periodeMulai" value="<%= typeof periodeMulai !== 'undefined' ? periodeMulai : '' %>" required>
+    </div>
+    <div>
+      <label for="periodeSelesai">Periode Selesai:</label>
+      <input type="date" id="periodeSelesai" name="periodeSelesai" value="<%= typeof periodeSelesai !== 'undefined' ? periodeSelesai : '' %>" required>
+    </div>
+    <button type="submit">Cari</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (data && data.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama Pegawai</th>
+          <th>Departemen</th>
+          <th>Periode Mulai</th>
+          <th>Periode Selesai</th>
+          <th>Lama Cuti (hari)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(item) { %>
+          <tr>
+            <td><%= item.nama %></td>
+            <td><%= item.departemen %></td>
+            <td><%= item.periode_mulai %></td>
+            <td><%= item.periode_selesai %></td>
+            <td><%= item.lama_waktu_cuti %></td>
+            <td><%= item.status %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else if (data) { %>
+    <p>Tidak ada data pengajuan cuti pada periode ini.</p>
+  <% } %>
+</body>
+</html>
