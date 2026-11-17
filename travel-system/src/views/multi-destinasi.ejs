@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cari Penerbangan Multi-destinasi</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    label { display: inline-block; width: 150px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    .error { color: #e74c3c; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC4: Mencari Penerbangan Multi-destinasi</h1>
+  <p><em>Masukkan kombinasi kriteria (boleh isi sebagian saja)</em></p>
+
+  <form method="GET" action="/multi-destinasi">
+    <div>
+      <label>Tanggal:</label>
+      <input type="date" name="tanggal" value="<%= typeof tanggal !== 'undefined' ? tanggal : '' %>">
+    </div>
+    <div>
+      <label>Kota Asal:</label>
+      <input type="text" name="kotaAsal" placeholder="Contoh: Jakarta" value="<%= typeof kotaAsal !== 'undefined' ? kotaAsal : '' %>">
+    </div>
+    <div>
+      <label>Kota Tujuan:</label>
+      <input type="text" name="kotaTujuan" placeholder="Contoh: Bali" value="<%= typeof kotaTujuan !== 'undefined' ? kotaTujuan : '' %>">
+    </div>
+    <button type="submit">Cari</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (data && data.length > 0) { %>
+    <table>
+      <thead>
+        <tr><th>No. Penerbangan</th><th>Maskapai</th><th>Rute</th><th>Tanggal</th><th>Harga</th></tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(item) { %>
+          <tr>
+            <td><%= item.nomor_penerbangan %></td>
+            <td><%= item.nama_maskapai %></td>
+            <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
+            <td><%= item.tanggal_keberangkatan %></td>
+            <td>Rp <%= item.harga.toLocaleString('id-ID') %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else if (data) { %>
+    <p>Tidak ada penerbangan yang sesuai kriteria.</p>
+  <% } %>
+</body>
+</html>

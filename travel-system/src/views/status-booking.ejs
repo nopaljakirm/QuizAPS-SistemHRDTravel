@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Status Booking</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .filter-link { margin-right: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC8: Memeriksa & Memfilter Status Booking</h1>
+
+  <p>
+    <a class="filter-link" href="/status-booking">Semua</a>
+    <a class="filter-link" href="/status-booking?filter=confirmed">Confirmed</a>
+    <a class="filter-link" href="/status-booking?filter=booked">Booked</a>
+    <a class="filter-link" href="/status-booking?filter=waiting_payment">Waiting Payment</a>
+    <a class="filter-link" href="/status-booking?filter=dibatalkan">Dibatalkan</a>
+  </p>
+
+  <p><em>Filter aktif: <%= filterAktif || 'Semua' %></em></p>
+
+  <% if (data && data.length > 0) { %>
+    <table>
+      <thead>
+        <tr><th>Kode Booking</th><th>No. Penerbangan</th><th>Rute</th><th>Status</th><th>E-tiket Terkirim</th></tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(item) { %>
+          <tr>
+            <td><%= item.kode_booking_reference %></td>
+            <td><%= item.nomor_penerbangan %></td>
+            <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
+            <td><%= item.status_booking %></td>
+            <td><%= item.etiket_terkirim ? 'Ya' : 'Belum' %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>Belum ada data booking.</p>
+  <% } %>
+</body>
+</html>

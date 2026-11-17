@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cari Jadwal Penerbangan</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    label { display: inline-block; width: 100px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    .error { color: #e74c3c; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC1: Mencari Jadwal Penerbangan</h1>
+
+  <form method="GET" action="/cari-penerbangan">
+    <div>
+      <label>Kota Asal:</label>
+      <input type="text" name="kotaAsal" placeholder="Contoh: Surabaya" value="<%= typeof kotaAsal !== 'undefined' ? kotaAsal : '' %>" required>
+    </div>
+    <div>
+      <label>Kota Tujuan:</label>
+      <input type="text" name="kotaTujuan" placeholder="Contoh: Jakarta" value="<%= typeof kotaTujuan !== 'undefined' ? kotaTujuan : '' %>" required>
+    </div>
+    <button type="submit">Cari</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (data && data.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th>No. Penerbangan</th><th>Maskapai</th><th>Tanggal</th><th>Jam</th><th>Harga</th><th>Kursi Tersedia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(item) { %>
+          <tr>
+            <td><%= item.nomor_penerbangan %></td>
+            <td><%= item.nama_maskapai %></td>
+            <td><%= item.tanggal_keberangkatan %></td>
+            <td><%= item.jam_keberangkatan %></td>
+            <td>Rp <%= item.harga.toLocaleString('id-ID') %></td>
+            <td><%= item.kursi_tersedia %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else if (data) { %>
+    <p>Tidak ada penerbangan untuk rute ini.</p>
+  <% } %>
+</body>
+</html>

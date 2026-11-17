@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Akun Pengunjung</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    label { display: inline-block; width: 120px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    .error { color: #e74c3c; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC10: Akun Pengunjung - Tiket Terpesan</h1>
+
+  <form method="GET" action="/akun-pengunjung">
+    <label>ID Pengunjung:</label>
+    <input type="number" name="pengunjungId" placeholder="Contoh: 1" required>
+    <button type="submit">Lihat Tiket</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (typeof pengunjung !== 'undefined' && pengunjung) { %>
+    <h3>Halo, <%= pengunjung.nama %>!</h3>
+
+    <% if (data && data.length > 0) { %>
+      <table>
+        <thead>
+          <tr><th>Kode Booking</th><th>No. Penerbangan</th><th>Rute</th><th>Tanggal</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <% data.forEach(function(item) { %>
+            <tr>
+              <td><%= item.kode_booking_reference %></td>
+              <td><%= item.nomor_penerbangan %></td>
+              <td><%= item.kota_asal %> &rarr; <%= item.kota_tujuan %></td>
+              <td><%= item.tanggal_keberangkatan %></td>
+              <td><%= item.status_booking %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>Belum ada tiket yang terpesan.</p>
+    <% } %>
+  <% } %>
+</body>
+</html>

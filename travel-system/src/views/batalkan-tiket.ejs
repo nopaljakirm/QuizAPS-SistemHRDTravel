@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Batalkan Tiket Pesawat</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    label { display: inline-block; width: 150px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    .error { color: #e74c3c; }
+    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC3: Membatalkan Tiket Pesawat</h1>
+
+  <form method="POST" action="/batalkan-tiket">
+    <div>
+      <label>Kode Booking:</label>
+      <input type="text" name="kodeBooking" placeholder="Contoh: BR123456" required>
+    </div>
+    <button type="submit">Batalkan Tiket</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (berhasil && tiket) { %>
+    <div class="success-box">
+      <h3>✅ Tiket Berhasil Dibatalkan</h3>
+      <p><strong>Kode Booking:</strong> <%= tiket.kode_booking_reference %></p>
+      <p><strong>Status:</strong> <%= tiket.status_booking %></p>
+    </div>
+  <% } %>
+</body>
+</html>

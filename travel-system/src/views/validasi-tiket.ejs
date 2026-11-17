@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Validasi Tiket</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    label { display: inline-block; width: 150px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    .error { color: #e74c3c; }
+    .warning-box { background: #fff3cd; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    a { color: #2980b9; }
+  </style>
+</head>
+<body>
+  <a href="/">&larr; Kembali ke Menu</a>
+  <h1>UC6: Melakukan Validasi Tiket</h1>
+  <p><em>Coba Pengguna ID 2 dengan kode booking hasil pemesanan sebelumnya</em></p>
+
+  <form method="POST" action="/validasi-tiket">
+    <div>
+      <label>ID Pengguna:</label>
+      <input type="number" name="penggunaId" placeholder="Contoh: 2" required>
+    </div>
+    <div>
+      <label>Kode Booking:</label>
+      <input type="text" name="kodeBooking" placeholder="Contoh: BR123456" required>
+    </div>
+    <button type="submit">Validasi Tiket</button>
+  </form>
+
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <% if (perluLengkapiProfil) { %>
+    <div class="warning-box">
+      <p>⚠️ Data profil Anda belum lengkap.</p>
+      <a href="/update-profil?penggunaId=<%= penggunaId %>">Lengkapi Profil Sekarang &rarr;</a>
+    </div>
+  <% } %>
+
+  <% if (hasil && hasil.valid) { %>
+    <div class="success-box">
+      <h3>✅ Tiket Valid</h3>
+      <p><strong>Kode Booking:</strong> <%= hasil.tiket.kode_booking_reference %></p>
+      <p><strong>Status:</strong> <%= hasil.tiket.status_booking %></p>
+    </div>
+  <% } %>
+</body>
+</html>
