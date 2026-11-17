@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS pemesanan (
   pengguna_id INTEGER,
   pengunjung_id INTEGER,
   penerbangan_id INTEGER NOT NULL,
+  nama_penumpang TEXT,
+  email_penumpang TEXT,
   tanggal_pemesanan TEXT NOT NULL,
   jumlah_penumpang INTEGER NOT NULL DEFAULT 1,
   total_harga INTEGER NOT NULL,

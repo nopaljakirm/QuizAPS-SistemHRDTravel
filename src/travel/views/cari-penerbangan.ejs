@@ -1,44 +1,46 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Cari Jadwal Penerbangan</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 100px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    .error { color: #e74c3c; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC1: Mencari Jadwal Penerbangan</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Cari Jadwal Penerbangan' }) %>
 
-  <form method="GET" action="/cari-penerbangan">
-    <div>
-      <label>Kota Asal:</label>
-      <input type="text" name="kotaAsal" placeholder="Contoh: Surabaya" value="<%= typeof kotaAsal !== 'undefined' ? kotaAsal : '' %>" required>
-    </div>
-    <div>
-      <label>Kota Tujuan:</label>
-      <input type="text" name="kotaTujuan" placeholder="Contoh: Jakarta" value="<%= typeof kotaTujuan !== 'undefined' ? kotaTujuan : '' %>" required>
-    </div>
-    <button type="submit">Cari</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Cari Jadwal Penerbangan</h1>
+  <p class="text-muted mb-0">Temukan penerbangan sesuai rute yang Anda inginkan.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="GET" action="/travel/cari-penerbangan" class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label">Kota Asal</label>
+        <input type="text" class="form-control" name="kotaAsal" placeholder="Contoh: Surabaya"
+               value="<%= typeof kotaAsal !== 'undefined' ? kotaAsal : '' %>" required>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label">Kota Tujuan</label>
+        <input type="text" class="form-control" name="kotaTujuan" placeholder="Contoh: Jakarta"
+               value="<%= typeof kotaTujuan !== 'undefined' ? kotaTujuan : '' %>" required>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Cari</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <% if (data && data.length > 0) { %>
-    <table>
+<% if (error) { %>
+  <div class="alert alert-warning"><%= error %></div>
+<% } %>
+
+<% if (data && data.length > 0) { %>
+  <div class="card">
+    <table class="table table-hover mb-0 align-middle">
       <thead>
         <tr>
-          <th>No. Penerbangan</th><th>Maskapai</th><th>Tanggal</th><th>Jam</th><th>Harga</th><th>Kursi Tersedia</th>
+          <th>No. Penerbangan</th>
+          <th>Maskapai</th>
+          <th>Tanggal</th>
+          <th>Jam</th>
+          <th>Harga</th>
+          <th>Kursi Tersedia</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -50,12 +52,20 @@
             <td><%= item.jam_keberangkatan %></td>
             <td>Rp <%= item.harga.toLocaleString('id-ID') %></td>
             <td><%= item.kursi_tersedia %></td>
+            <td>
+              <% if (item.kursi_tersedia > 0) { %>
+                <a href="/travel/pesan-tiket?penerbanganId=<%= item.id %>" class="btn btn-sm btn-success">Pesan</a>
+              <% } else { %>
+                <span class="badge text-bg-secondary">Penuh</span>
+              <% } %>
+            </td>
           </tr>
         <% }); %>
       </tbody>
     </table>
-  <% } else if (data) { %>
-    <p>Tidak ada penerbangan untuk rute ini.</p>
-  <% } %>
-</body>
-</html>
+  </div>
+<% } else if (data) { %>
+  <div class="alert alert-info">Tidak ada penerbangan untuk rute ini.</div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

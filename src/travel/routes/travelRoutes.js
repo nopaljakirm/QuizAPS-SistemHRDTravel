@@ -7,7 +7,7 @@ const router = express.Router();
 
 const penerbanganController = require('../controllers/penerbanganController');
 const pemesananController = require('../controllers/pemesananController');
-const pembatalanController = require('../controllers/pembatalanController');
+const tiketSayaController = require('../controllers/tiketSayaController');
 const multiDestinasiController = require('../controllers/multiDestinasiController');
 const profilController = require('../controllers/profilController');
 const validasiTiketController = require('../controllers/validasiTiketController');
@@ -28,9 +28,9 @@ router.get('/cari-penerbangan', penerbanganController.searchPenerbangan);
 router.get('/pesan-tiket', pemesananController.showFormPemesanan);
 router.post('/pesan-tiket', pemesananController.pesanTiket);
 
-// UC3 (US2c): Membatalkan Tiket Pesawat
-router.get('/batalkan-tiket', pembatalanController.showFormPembatalan);
-router.post('/batalkan-tiket', pembatalanController.batalkanTiket);
+// UC3 (US2c): Melihat & Membatalkan Tiket Pesawat
+router.get('/tiket-saya', tiketSayaController.lihatTiketSaya);
+router.post('/batalkan-tiket', tiketSayaController.batalkanTiket);
 
 // UC4 (US4): Mencari Penerbangan Multi-destinasi
 router.get('/multi-destinasi', multiDestinasiController.searchMultiDestinasi);

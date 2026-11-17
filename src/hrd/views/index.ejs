@@ -1,21 +1,40 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Sistem Manajemen Cuti - HRD</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-    h1 { color: #2c3e50; }
-    .menu-item { display: block; padding: 15px; margin: 10px 0; background: #ecf0f1; border-radius: 8px; text-decoration: none; color: #2c3e50; }
-    .menu-item:hover { background: #d5dbdb; }
-  </style>
-</head>
-<body>
-  <h1>Sistem Manajemen Cuti (HRD)</h1>
-  <p>Selamat datang, HRD Manajer. Silakan pilih menu di bawah:</p>
+<%- include('../../views/partials/header', { pageTitle: 'Modul HRD - Manajemen Cuti' }) %>
 
-  <a class="menu-item" href="/pengajuan-periode">📅 UC1: Melihat Pengajuan Cuti berdasarkan Periode</a>
-  <a class="menu-item" href="/detail-pengajuan">📋 UC2: Melihat Detail Pengajuan Cuti</a>
-  <a class="menu-item" href="/riwayat-cuti">📊 UC3: Melihat Riwayat & Sisa Cuti Pegawai</a>
-</body>
-</html>
+<div class="page-header">
+  <h1 class="h3">Modul HRD &mdash; Manajemen Cuti</h1>
+  <p class="text-muted mb-0">Kelola dan pantau pengajuan cuti pegawai.</p>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Pengajuan Cuti per Periode</h5>
+        <p class="card-text text-muted">Lihat daftar pegawai yang mengajukan cuti pada rentang tanggal tertentu.</p>
+        <a href="/hrd/pengajuan-periode" class="btn btn-outline-primary">Buka Halaman</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Detail Pengajuan Cuti</h5>
+        <p class="card-text text-muted">Lihat rincian pengajuan cuti pegawai (nama, periode, lama cuti, status).</p>
+        <a href="/hrd/detail-pengajuan" class="btn btn-outline-primary">Buka Halaman</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Riwayat &amp; Sisa Cuti</h5>
+        <p class="card-text text-muted">Cek riwayat dan sisa cuti pegawai pada tahun berjalan.</p>
+        <a href="/hrd/riwayat-cuti" class="btn btn-outline-primary">Buka Halaman</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../views/partials/footer') %>

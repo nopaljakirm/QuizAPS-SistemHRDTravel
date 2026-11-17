@@ -1,50 +1,43 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Pengajuan Cuti per Periode</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    h1 { color: #2c3e50; }
-    form { margin-bottom: 20px; }
-    label { display: inline-block; width: 120px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    .error { color: #e74c3c; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC1: Pengajuan Cuti berdasarkan Periode</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Pengajuan Cuti per Periode' }) %>
 
-  <form method="GET" action="/pengajuan-periode">
-    <div>
-      <label for="periodeMulai">Periode Mulai:</label>
-      <input type="date" id="periodeMulai" name="periodeMulai" value="<%= typeof periodeMulai !== 'undefined' ? periodeMulai : '' %>" required>
-    </div>
-    <div>
-      <label for="periodeSelesai">Periode Selesai:</label>
-      <input type="date" id="periodeSelesai" name="periodeSelesai" value="<%= typeof periodeSelesai !== 'undefined' ? periodeSelesai : '' %>" required>
-    </div>
-    <button type="submit">Cari</button>
-  </form>
+<div class="page-header">
+  <h1 class="h3">Pengajuan Cuti per Periode</h1>
+  <p class="text-muted mb-0">Lihat daftar pegawai yang mengajukan cuti pada rentang tanggal tertentu.</p>
+</div>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="GET" action="/hrd/pengajuan-periode" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Periode Mulai</label>
+        <input type="date" class="form-control" name="periodeMulai"
+               value="<%= typeof periodeMulai !== 'undefined' ? periodeMulai : '' %>" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Periode Selesai</label>
+        <input type="date" class="form-control" name="periodeSelesai"
+               value="<%= typeof periodeSelesai !== 'undefined' ? periodeSelesai : '' %>" required>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Cari</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <% if (data && data.length > 0) { %>
-    <table>
+<% if (error) { %>
+  <div class="alert alert-warning"><%= error %></div>
+<% } %>
+
+<% if (data && data.length > 0) { %>
+  <div class="card">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
           <th>Nama Pegawai</th>
           <th>Departemen</th>
-          <th>Periode Mulai</th>
-          <th>Periode Selesai</th>
-          <th>Lama Cuti (hari)</th>
+          <th>Periode</th>
+          <th>Lama Cuti</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -53,16 +46,10 @@
           <tr>
             <td><%= item.nama %></td>
             <td><%= item.departemen %></td>
-            <td><%= item.periode_mulai %></td>
-            <td><%= item.periode_selesai %></td>
-            <td><%= item.lama_waktu_cuti %></td>
-            <td><%= item.status %></td>
-          </tr>
-        <% }); %>
-      </tbody>
-    </table>
-  <% } else if (data) { %>
-    <p>Tidak ada data pengajuan cuti pada periode ini.</p>
-  <% } %>
-</body>
-</html>
+            <td><%= item.periode_mulai %> s/d <%= item.periode_selesai %></td>
+            <td><%= item.lama_waktu_cuti %> hari</td>
+            <td>
+              <% if (item.status === 'disetujui') { %>
+                <span class="badge text-bg-success">Disetujui</span>
+              <% } else if (item.status === 'pending') { %>
+                <span

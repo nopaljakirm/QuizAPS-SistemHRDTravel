@@ -1,47 +1,64 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Pesan Tiket Pesawat</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
-    label { display: inline-block; width: 150px; }
-    input, button { padding: 8px; margin: 5px 0; }
-    .error { color: #e74c3c; }
-    .success-box { background: #d4edda; padding: 20px; border-radius: 8px; margin-top: 20px; }
-    a { color: #2980b9; }
-  </style>
-</head>
-<body>
-  <a href="/">&larr; Kembali ke Menu</a>
-  <h1>UC2: Memesan Tiket Pesawat</h1>
+<%- include('../../views/partials/header', { pageTitle: 'Pesan Tiket Pesawat' }) %>
 
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
+<div class="page-header">
+  <h1 class="h3">Pesan Tiket Pesawat</h1>
+</div>
 
-  <% if (!konfirmasi) { %>
-    <form method="POST" action="/pesan-tiket">
-      <div>
-        <label>ID Penerbangan:</label>
-        <input type="number" name="penerbanganId" placeholder="Contoh: 1" required>
+<% if (error) { %>
+  <div class="alert alert-warning"><%= error %></div>
+  <a href="/travel/cari-penerbangan" class="btn btn-outline-primary">Kembali ke Pencarian</a>
+<% } %>
+
+<% if (penerbangan) { %>
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title text-muted">Detail Penerbangan</h6>
+          <table class="table table-borderless mb-0">
+            <tr><th style="width: 140px;">No. Penerbangan</th><td><%= penerbangan.nomor_penerbangan %></td></tr>
+            <tr><th>Maskapai</th><td><%= penerbangan.nama_maskapai %></td></tr>
+            <tr><th>Rute</th><td><%= penerbangan.kota_asal %> &rarr; <%= penerbangan.kota_tujuan %></td></tr>
+            <tr><th>Tanggal</th><td><%= penerbangan.tanggal_keberangkatan %></td></tr>
+            <tr><th>Jam</th><td><%= penerbangan.jam_keberangkatan %></td></tr>
+            <tr><th>Harga</th><td>Rp <%= penerbangan.harga.toLocaleString('id-ID') %></td></tr>
+          </table>
+        </div>
       </div>
-      <div>
-        <label>Nama Penumpang:</label>
-        <input type="text" name="namaPenumpang" placeholder="Nama Anda" required>
-      </div>
-      <button type="submit">Pesan Tiket</button>
-    </form>
-    <p><em>Tips: coba ID Penerbangan 1 atau 2 (rute Surabaya-Jakarta)</em></p>
-  <% } %>
-
-  <% if (konfirmasi) { %>
-    <div class="success-box">
-      <h3>✅ Pemesanan Berhasil!</h3>
-      <p><strong>Nama Penumpang:</strong> <%= konfirmasi.namaPenumpang %></p>
-      <p><strong>Kode Booking:</strong> <%= konfirmasi.kode_booking_reference %></p>
-      <p><strong>Status:</strong> <%= konfirmasi.status_booking %></p>
     </div>
-  <% } %>
-</body>
-</html>
+
+    <div class="col-md-7">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title text-muted">Data Penumpang</h6>
+          <form method="POST" action="/travel/pesan-tiket">
+            <input type="hidden" name="penerbanganId" value="<%= penerbangan.id %>">
+            <div class="mb-3">
+              <label class="form-label">Nama Lengkap</label>
+              <input type="text" class="form-control" name="namaPenumpang" placeholder="Nama sesuai identitas" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="emailPenumpang" placeholder="email@contoh.com" required>
+              <div class="form-text">Digunakan untuk melihat kembali tiket Anda nanti.</div>
+            </div>
+            <button type="submit" class="btn btn-success">Konfirmasi Pemesanan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<% if (konfirmasi) { %>
+  <div class="alert alert-success">
+    <h5 class="alert-heading">Pemesanan Berhasil</h5>
+    <p class="mb-1"><strong>Nama Penumpang:</strong> <%= konfirmasi.namaPenumpang %></p>
+    <p class="mb-1"><strong>Kode Booking:</strong> <span class="fw-bold"><%= konfirmasi.kode_booking_reference %></span></p>
+    <p class="mb-1"><strong>Rute:</strong> <%= konfirmasi.penerbangan.kota_asal %> &rarr; <%= konfirmasi.penerbangan.kota_tujuan %></p>
+    <p class="mb-0"><strong>Status:</strong> <%= konfirmasi.status_booking %></p>
+  </div>
+  <a href="/travel/tiket-saya?email=<%= konfirmasi.email_penumpang || '' %>" class="btn btn-outline-primary">Lihat Tiket Saya</a>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

@@ -1,13 +1,22 @@
-// src/controllers/pemesananController.js
+// src/travel/controllers/pemesananController.js
 // Controller untuk UC2: Memesan Tiket Pesawat (US2b)
 
 const Penerbangan = require('../models/Penerbangan');
 const Pemesanan = require('../models/Pemesanan');
 const Tiket = require('../models/Tiket');
 
-// Form pemilihan tiket (ditampilkan sebelum konfirmasi pesan)
+// Menampilkan form pemesanan dengan detail penerbangan yang sudah dipilih dari hasil pencarian
 exports.showFormPemesanan = (req, res) => {
   const { penerbanganId } = req.query;
+
+  if (!penerbanganId) {
+    return res.render('pesan-tiket', {
+      error: 'Mohon pilih penerbangan terlebih dahulu dari halaman pencarian',
+      penerbangan: null,
+      konfirmasi: null
+    });
+  }
+
   const penerbangan = Penerbangan.findById(penerbanganId);
 
   if (!penerbangan) {
@@ -19,7 +28,7 @@ exports.showFormPemesanan = (req, res) => {
 
 // Sesuai UC2 (US2b): proses pemesanan tiket
 exports.pesanTiket = (req, res) => {
-  const { penerbanganId, namaPenumpang } = req.body;
+  const { penerbanganId, namaPenumpang, emailPenumpang } = req.body;
 
   const penerbangan = Penerbangan.findById(penerbanganId);
 
@@ -37,11 +46,12 @@ exports.pesanTiket = (req, res) => {
     });
   }
 
-  // Controller mengoordinasikan beberapa entity (sesuai Sequence Diagram UC2)
   const pemesananId = Pemesanan.create({
-    penggunaId: null, // sementara belum ada sistem login, bisa dikembangkan
+    penggunaId: null,
     pengunjungId: null,
     penerbanganId,
+    namaPenumpang,
+    emailPenumpang,
     jumlahPenumpang: 1,
     totalHarga: penerbangan.harga
   });
@@ -52,7 +62,7 @@ exports.pesanTiket = (req, res) => {
 
   res.render('pesan-tiket', {
     error: null,
-    penerbangan,
-    konfirmasi: { ...tiket, namaPenumpang }
+    penerbangan: null,
+    konfirmasi: { ...tiket, namaPenumpang, penerbangan }
   });
 };
