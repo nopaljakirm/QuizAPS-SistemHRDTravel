@@ -9,6 +9,8 @@ const hrdRoutes = require('./src/hrd/routes/hrdRoutes');
 const travelRoutes = require('./src/travel/routes/travelRoutes');
 
 const app = express();
+app.disable('x-powered-by');
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware untuk membaca data form (POST request) - dibutuhkan Sistem Travel
