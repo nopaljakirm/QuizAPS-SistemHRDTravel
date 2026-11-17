@@ -1,4 +1,4 @@
-// src/controllers/multiDestinasiController.js
+// src/travel/controllers/multiDestinasiController.js
 // Controller untuk UC4: Mencari Penerbangan Multi-destinasi (US4)
 
 const Penerbangan = require('../models/Penerbangan');

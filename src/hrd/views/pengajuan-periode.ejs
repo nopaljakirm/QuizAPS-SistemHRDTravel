@@ -52,4 +52,18 @@
               <% if (item.status === 'disetujui') { %>
                 <span class="badge text-bg-success">Disetujui</span>
               <% } else if (item.status === 'pending') { %>
-                <span
+                <span class="badge text-bg-warning">Pending</span>
+              <% } else { %>
+                <span class="badge text-bg-secondary"><%= item.status %></span>
+              <% } %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } else if (data) { %>
+  <div class="alert alert-info">Tidak ada data pengajuan cuti pada periode ini.</div>
+<% } %>
+
+<%- include('../../views/partials/footer') %>

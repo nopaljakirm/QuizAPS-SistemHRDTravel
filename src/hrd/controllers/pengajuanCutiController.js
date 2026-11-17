@@ -1,4 +1,4 @@
-// src/controllers/pengajuanCutiController.js
+// src/hrd/controllers/pengajuanCutiController.js
 // Controller untuk UC1 & UC2: Melihat Pengajuan Cuti berdasarkan Periode (US1, US1b)
 // Mengikuti alur Robustness & Sequence Diagram: Boundary -> Controller -> Entity
 

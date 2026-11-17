@@ -1,4 +1,4 @@
-// src/controllers/penerbanganController.js
+// src/travel/controllers/penerbanganController.js
 // Controller untuk UC1: Mencari Jadwal Penerbangan (US2, US3)
 
 const Penerbangan = require('../models/Penerbangan');

@@ -15,17 +15,17 @@ class Tiket {
     stmt.run(pemesananId, kodeBooking, tanggalPemesanan);
 
     return this.findByKodeBooking(kodeBooking);
-  }
+}
 
-  static findByKodeBooking(kodeBooking) {
+static findByKodeBooking(kodeBooking) {
     const stmt = db.prepare(`
-      SELECT t.*, pm.kode_booking_reference, pm.status_booking
+      SELECT t.*, pm.email_penumpang, pm.nama_penumpang
       FROM tiket t
       JOIN pemesanan pm ON t.pemesanan_id = pm.id
-      WHERE pm.kode_booking_reference = ?
+      WHERE t.kode_booking_reference = ?
     `);
     return stmt.get(kodeBooking);
-  }
+}
 
   static batalkan(kodeBooking) {
     const stmt = db.prepare(`UPDATE tiket SET status_booking = 'dibatalkan' WHERE kode_booking_reference = ?`);
